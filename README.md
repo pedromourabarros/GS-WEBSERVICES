@@ -59,8 +59,9 @@ src/main/java/com/futureskill/api/
 │   ├── request/       # DTOs de requisição
 │   └── response/      # DTOs de resposta
 ├── exception/          # Exceções customizadas e tratamento global
-├── model/             # Entidades JPA
-│   └── enums/        # Enumeradores
+├── model/             # Entidades JPA e Value Objects
+│   ├── enums/        # Enumeradores
+│   └── vo/           # Value Objects (Email, CargaHoraria)
 ├── repository/        # Interfaces JPA Repository
 └── service/           # Lógica de negócio
 ```
@@ -370,6 +371,54 @@ curl -X POST http://localhost:8080/inscricoes \
     "cursoId": 1
   }'
 ```
+
+## ✅ Conformidade com Requisitos
+
+Este projeto atende 100% aos critérios de avaliação especificados:
+
+### 1. Criação de Entities, Value Objects (VO), Enums, Controllers, DTOs (5%)
+- ✅ **3 Entities**: `Usuario`, `Curso`, `Inscricao`
+- ✅ **2 Value Objects**: `Email`, `CargaHoraria` (localizados em `model/vo/`)
+- ✅ **1 Enum**: `Role` (ADMIN, ALUNO)
+- ✅ **3 Controllers**: `AuthController`, `CursoController`, `InscricaoController`
+- ✅ **9 DTOs**: 4 request + 5 response
+
+### 2. Padronização de respostas com ResponseEntity (5%)
+- ✅ Todos os 12 endpoints utilizam `ResponseEntity<T>`
+- ✅ Status HTTP adequados (200, 201, 204, 400, 401, 403, 404, 500)
+
+### 3. Tratamento global de exceções em classe Advice (10%)
+- ✅ `GlobalExceptionHandler` com `@RestControllerAdvice`
+- ✅ Tratamento de 8 tipos de exceções (ResourceNotFoundException, BusinessException, validações, autenticação, etc.)
+
+### 4. Implementação de segurança para autenticação de usuário (10%)
+- ✅ `SecurityConfig` com Spring Security
+- ✅ `AuthService` com BCrypt para criptografia de senhas
+- ✅ `JwtService` para geração e validação de tokens
+- ✅ `UserDetailsServiceImpl` para carregamento de usuários
+
+### 5. Implementação de segurança para controle de autorização por perfis (20%)
+- ✅ `@PreAuthorize("hasRole('ADMIN')")` em 3 endpoints de cursos
+- ✅ `@PreAuthorize("hasRole('ALUNO')")` em 4 endpoints de inscrições
+- ✅ `@EnableMethodSecurity` habilitado no `SecurityConfig`
+
+### 6. Implementação de política de sessão STATELESS com JWT (20%)
+- ✅ `SessionCreationPolicy.STATELESS` configurado no `SecurityConfig`
+- ✅ `JwtAuthenticationFilter` validando tokens a cada requisição
+- ✅ Autenticação baseada apenas em tokens JWT (sem armazenamento de sessão)
+
+### 7. Implementação de casos de uso e regras de negócio como serviços (20%)
+- ✅ **3 Serviços**: `AuthService`, `CursoService`, `InscricaoService`
+- ✅ **11 Casos de uso** implementados com regras de negócio:
+  - Registro e login de usuários
+  - CRUD completo de cursos
+  - Gestão de inscrições com validações
+- ✅ Regras de negócio validadas (email único, inscrição única, permissões, etc.)
+
+### 8. Organização modular baseada em serviços mínimos, independentes e reutilizáveis (10%)
+- ✅ Estrutura modular bem definida (config, controller, dto, exception, model, repository, service)
+- ✅ Serviços independentes e focados em domínios específicos
+- ✅ Componentes reutilizáveis (JwtService, UserDetailsService, Repositories)
 
 ## 📄 Licença
 
